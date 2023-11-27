@@ -1,16 +1,19 @@
-const {ethers}=require("hardhat");
 
 async function main(){
     
-    const deployNFTContract=await ethers.deployContract("UnrealNFT");
-    const unreal=await deployNFTContract.waitForDeployment();
+    const UnrealNFT=await ethers.getContractFactory("UnrealNFT");
+    console.log("Deploying Contract...");
 
-    console.log("Unreal contract address is :",await unreal.getAddress());
+    const unreal=await UnrealNFT.deploy();
+    const txHash=unreal.deployTransaction.hash;
+    const txReceipt=await ethers.provider.waitForTransaction(txHash);
+
+    console.log("Contract deployed to address :",txReceipt.contractAddress);
 
     console.log("Minting NFT...");
     let txn=await unreal.mintNFT();
     await txn.wait();
-    console.log("NFT minted successfully!!!");
+    
 }
 
 
