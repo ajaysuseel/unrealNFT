@@ -1,9 +1,18 @@
-const hre=require("hardhat");
+const {ethers}=require("hardhat");
 
 async function main(){
-    console.log("Deploying Contract...");
-    const elon=await hre.ethers.deployContract("ElonNFT");
-    console.log("Contract deployed to address :",elon.target);
+    
+    const deployNFTContract=await ethers.deployContract("UnrealNFT");
+    const unreal=await deployNFTContract.waitForDeployment();
+
+    console.log("Unreal contract address is :",await unreal.getAddress());
+
+    console.log("Minting NFT...");
+    let txn=await unreal.mintNFT();
+    await txn.wait();
+    console.log("NFT minted successfully!!!");
+}
+
 
     main()
         .then(()=>process.exit(0))
@@ -11,4 +20,4 @@ async function main(){
             console.error(error);
             process.exit(1);
         });
-}
+
